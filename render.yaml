@@ -8,9 +8,11 @@ services:
   - type: redis
     name: sim-redis
     plan: free
+    ipAllowList: [] # FIX: Added required IP allow list for internal traffic
 
   - type: web
     name: sim-studio
+    env: docker # FIX: Added the critical missing 'env' type
     plan: starter
     repo: https://github.com/aliq99/simQ99
     dockerContext: ./packages/studio
@@ -22,5 +24,6 @@ services:
           property: connectionString
       - key: REDIS_URL
         fromService:
+          type: redis # FIX: Added the required service type
           name: sim-redis
           property: connectionString
