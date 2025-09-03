@@ -1,28 +1,26 @@
-services:
-  - type: db
-    name: sim-db
+databases:
+  - name: sim-database
     databaseName: simstudio
     user: simstudio
     plan: free
 
+services:
   - type: redis
     name: sim-redis
     plan: free
 
   - type: web
     name: sim-studio
-    plan: starter # Your $7 plan
+    plan: starter
     repo: https://github.com/aliq99/simQ99
     dockerContext: ./packages/studio
     dockerfilePath: ./packages/studio/Dockerfile
     envVars:
       - key: DATABASE_URL
-        fromService:
-          type: db
-          name: sim-db
+        fromDatabase:
+          name: sim-database
           property: connectionString
       - key: REDIS_URL
         fromService:
-          type: redis
           name: sim-redis
           property: connectionString
