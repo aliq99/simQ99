@@ -1,39 +1,28 @@
 services:
-  - type: pserv
-    name: postgres
-    repo: https://github.com/render-examples/postgres-hello
-    env: docker
+  - type: db
+    name: sim-db
+    databaseName: simstudio
+    user: simstudio
     plan: free
-    disk:
-      name: postgres-data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 1
 
-  - type: pserv
-    name: redis
-    repo: https://github.com/render-examples/redis-hello
-    env: docker
+  - type: redis
+    name: sim-redis
     plan: free
-    disk:
-      name: redis-data
-      mountPath: /data
-      sizeGB: 1
 
   - type: web
     name: sim-studio
-    env: docker
-    plan: starter # This will use your $7 plan
-    repo: https://github.com/aliq99/simQ99 # This uses your repo
+    plan: starter # Your $7 plan
+    repo: https://github.com/aliq99/simQ99
     dockerContext: ./packages/studio
     dockerfilePath: ./packages/studio/Dockerfile
     envVars:
       - key: DATABASE_URL
         fromService:
-          type: pserv
-          name: postgres
+          type: db
+          name: sim-db
           property: connectionString
       - key: REDIS_URL
         fromService:
-          type: pserv
-          name: redis
+          type: redis
+          name: sim-redis
           property: connectionString
